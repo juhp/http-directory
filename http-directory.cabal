@@ -30,14 +30,10 @@ library
 
   build-depends:       base < 5,
                        bytestring,
-                       directory,
-                       filepath,
                        html-conduit,
                        http-client,
-                       http-client-tls,
                        http-types,
                        text,
-                       unix,
                        xml-conduit
   if impl(ghc<8.0)
       Build-depends: semigroups
