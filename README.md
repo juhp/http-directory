@@ -6,4 +6,4 @@
 [![Stackage Nightly](http://stackage.org/package/http-directory/badge/nightly)](http://stackage.org/nightly/package/http-directory)
 [![Build status](https://secure.travis-ci.org/juhp/http-directory.svg)](https://travis-ci.org/juhp/http-directory)
 
-http directory listing library
+A simple library for reading http directories.

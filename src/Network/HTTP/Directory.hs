@@ -29,7 +29,7 @@ import Data.Text (Text)
 import Network.HTTP.Client (hrRedirects, httpLbs, httpNoBody, Manager, method,
                             parseRequest, responseBody, responseHeaders,
                             responseOpenHistory, responseStatus)
-import Network.HTTP.Types (hContentLength, statusCode)
+import Network.HTTP.Types (hContentLength, hLocation, statusCode)
 
 import Text.HTML.DOM (parseLBS)
 import Text.XML.Cursor
@@ -67,12 +67,13 @@ httpFileSize mgr url = do
     let headers = responseHeaders response
     return $ read . B.unpack <$> lookup hContentLength headers
 
--- | returns the list of http redirects for an url in reverse order (ie last redirect is first)
+-- | returns the list of http redirects for an url in reverse order
+-- (ie last redirect is first)
 httpRedirects :: Manager -> String -> IO [B.ByteString]
 httpRedirects mgr url = do
   request <- parseRequest url
   respHist <- responseOpenHistory (request {method = "HEAD"}) mgr
-  return $ reverse $ mapMaybe (lookup "Location" . responseHeaders . snd) $ hrRedirects respHist
+  return $ reverse $ mapMaybe (lookup hLocation . responseHeaders . snd) $ hrRedirects respHist
 
 -- | return final redirect for an url
 httpRedirect :: Manager -> String -> IO (Maybe B.ByteString)
