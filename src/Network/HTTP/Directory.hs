@@ -16,7 +16,6 @@ main = do
 
 module Network.HTTP.Directory
        ( httpDirectory,
-         httpGlob,
          httpFileSize,
          httpRedirect,
          httpRedirects
@@ -55,11 +54,6 @@ httpDirectory mgr url = do
         doc = parseLBS body
         cursor = fromDocument doc
     return $ concatMap (attribute "href") $ cursor $// element "a"
-
--- | use a predicate filter to list certain files in an http directory
-httpGlob :: Manager -> String -> (Text -> Bool) -> IO [Text]
-httpGlob mgr url test =
-  filter test <$> httpDirectory mgr url
 
 -- | Try to get the filesize (Content-Length) of an http file
 httpFileSize :: Manager -> String -> IO (Maybe Int)
