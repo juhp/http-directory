@@ -56,7 +56,7 @@ httpDirectory mgr url = do
     return $ concatMap (attribute "href") $ cursor $// element "a"
 
 -- | Try to get the filesize (Content-Length) of an http file
-httpFileSize :: Manager -> String -> IO (Maybe Int)
+httpFileSize :: Manager -> String -> IO (Maybe Integer)
 httpFileSize mgr url = do
   request <- parseRequest url
   response <- httpNoBody (request {method = "HEAD"}) mgr
