@@ -2,7 +2,9 @@ cabal-version:       1.18
 name:                http-directory
 version:             0.1.0
 synopsis:            http directory listing library
-description:         Library for reading http directories
+description:
+            Library for listing http directories of files (links).
+            Also it can check the size of files, and url redirects.
 homepage:            https://github.com/juhp/http-directory
 bug-reports:         https://github.com/juhp/http-directory/issues
 license:             MIT
