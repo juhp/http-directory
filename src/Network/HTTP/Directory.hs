@@ -22,6 +22,11 @@ module Network.HTTP.Directory
          httpRedirects
        ) where
 
+#if (defined(MIN_VERSION_base) && MIN_VERSION_base(4,8,0))
+#else
+import Control.Applicative ((<$>))
+#endif
+
 import qualified Data.ByteString.Char8 as B
 import Data.Maybe
 import Data.Text (Text)
