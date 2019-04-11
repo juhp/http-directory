@@ -2,9 +2,9 @@
 
 module Network.HTTP.Directory
        ( httpDirectory,
+         httpGlob,
          httpRedirect,
          httpRedirects,
---         httpGlob,
 --         httpFileSize
        ) where
 
@@ -31,6 +31,10 @@ httpDirectory mgr url = do
         doc = parseLBS body
         cursor = fromDocument doc
     return $ concatMap (attribute "href") $ cursor $// element "a"
+
+httpGlob :: Manager -> String -> (Text -> Bool) -> IO [Text]
+httpGlob mgr url test =
+  filter test <$> httpDirectory mgr url
 
 -- | returns the list of http redirects for an url
 httpRedirects :: Manager -> String -> IO [B.ByteString]
