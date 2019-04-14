@@ -17,6 +17,7 @@ main = do
 module Network.HTTP.Directory
        ( httpDirectory,
          httpFileSize,
+         httpLastModified,
          httpRedirect,
          httpRedirects
        ) where
@@ -29,10 +30,12 @@ import Control.Applicative ((<$>))
 import qualified Data.ByteString.Char8 as B
 import Data.Maybe
 import Data.Text (Text)
+import Data.Time.Clock (UTCTime)
 
 import Network.HTTP.Client (hrRedirects, httpLbs, httpNoBody, Manager, method,
                             parseRequest, responseBody, responseHeaders,
                             responseOpenHistory, responseStatus)
+import Network.HTTP.Date (httpDateToUTC, parseHTTPDate)
 import Network.HTTP.Types (hContentLength, hLocation, statusCode)
 
 import Text.HTML.DOM (parseLBS)
@@ -70,6 +73,20 @@ httpFileSize mgr url = do
     else do
     let headers = responseHeaders response
     return $ read . B.unpack <$> lookup hContentLength headers
+
+-- | Try to get the modification time (Last-Modified field) of an http file
+--
+-- Raises an error if the http request fails.
+httpLastModified :: Manager -> String -> IO (Maybe UTCTime)
+httpLastModified mgr url = do
+  request <- parseRequest url
+  response <- httpNoBody (request {method = "HEAD"}) mgr
+  if statusCode (responseStatus response) /= 200
+    then error $ show $ responseStatus response
+    else do
+    let headers = responseHeaders response
+        mdate = lookup "Last-Modified" headers
+    return $ httpDateToUTC <$> maybe Nothing parseHTTPDate mdate
 
 -- | Returns the list of http redirects for an url in reverse order
 -- (ie last redirect is first)
