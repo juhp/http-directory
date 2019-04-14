@@ -6,11 +6,15 @@ A library for listing "files" in an http "directory".
 @
 import Network.HTTP.Directory
 import qualified Data.Text as T
+import Network.HTTP.Client (newManager)
+import Network.HTTP.Client.TLS (tlsManagerSettings)
 
 main = do
-  files <- httpDirectory "https://example.com/some/dir/"
+  mgr <- newManager tlsManagerSettings
+  files <- httpDirectory mgr "https://example.com/some/dir/"
   mapM_ T.putStrLn files
-  httpFileSize (head files) >>= print
+  httpFileSize mgr (head files) >>= print
+  httpLastModified mgr (head files) >>= print
 @
 -}
 
@@ -89,7 +93,7 @@ httpLastModified mgr url = do
     return $ httpDateToUTC <$> maybe Nothing parseHTTPDate mdate
 
 -- | Returns the list of http redirects for an url in reverse order
--- (ie last redirect is first)
+-- (ie last redirect is listed first)
 httpRedirects :: Manager -> String -> IO [B.ByteString]
 httpRedirects mgr url = do
   request <- parseRequest url

@@ -7,3 +7,12 @@
 [![Build status](https://secure.travis-ci.org/juhp/http-directory.svg)](https://travis-ci.org/juhp/http-directory)
 
 A simple library for reading http directories.
+
+It uses http-client for http transport, and
+html-conduit and xml-conduit to parse the html for links.
+
+The library is intended for listing the files in http file directories,
+but since http directories are just html pages it can actually be used
+to list the links (href's) on any html webpage.
+
+See the haddock documentation for usage.
