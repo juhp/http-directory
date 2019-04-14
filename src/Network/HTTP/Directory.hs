@@ -40,8 +40,11 @@ import Text.XML.Cursor
 
 -- | List the file links (hrefs) in an http directory
 --
--- Note if the directory (webpage) url is redirected you may need to use
--- 'httpRedirect' to determine the actual final url prefix for relative links
+-- Raises an error if the http request fails.
+--
+-- Note if the directory (webpage) url is redirected to a different path
+-- you may need to use 'httpRedirect' to determine
+-- the actual final url prefix for relative links
 -- (files).
 httpDirectory :: Manager -> String -> IO [Text]
 httpDirectory mgr url = do
@@ -55,7 +58,9 @@ httpDirectory mgr url = do
         cursor = fromDocument doc
     return $ concatMap (attribute "href") $ cursor $// element "a"
 
--- | Try to get the filesize (Content-Length) of an http file
+-- | Try to get the filesize (Content-Length field) of an http file
+--
+-- Raises an error if the http request fails.
 httpFileSize :: Manager -> String -> IO (Maybe Integer)
 httpFileSize mgr url = do
   request <- parseRequest url
