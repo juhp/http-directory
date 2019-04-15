@@ -22,6 +22,7 @@ module Network.HTTP.Directory
        ( httpDirectory,
          httpFileSize,
          httpLastModified,
+         httpManager,
          httpRedirect,
          httpRedirects
        ) where
@@ -37,8 +38,9 @@ import Data.Text (Text)
 import Data.Time.Clock (UTCTime)
 
 import Network.HTTP.Client (hrRedirects, httpLbs, httpNoBody, Manager, method,
-                            parseRequest, responseBody, responseHeaders,
-                            responseOpenHistory, responseStatus)
+                            newManager, parseRequest, responseBody,
+                            responseHeaders, responseOpenHistory, responseStatus)
+import Network.HTTP.Client.TLS (tlsManagerSettings)
 import Network.HTTP.Date (httpDateToUTC, parseHTTPDate)
 import Network.HTTP.Types (hContentLength, hLocation, statusCode)
 
@@ -91,6 +93,12 @@ httpLastModified mgr url = do
     let headers = responseHeaders response
         mdate = lookup "Last-Modified" headers
     return $ httpDateToUTC <$> maybe Nothing parseHTTPDate mdate
+
+-- | alias for 'newManager tlsManagerSettings'
+-- so one does not need to import http-client etc
+httpManager :: IO Manager
+httpManager =
+  newManager tlsManagerSettings
 
 -- | Returns the list of http redirects for an url in reverse order
 -- (ie last redirect is listed first)
