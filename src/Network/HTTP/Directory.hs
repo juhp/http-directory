@@ -60,7 +60,9 @@ httpDirectory mgr url = do
   request <- parseRequest url
   response <- httpLbs request mgr
   if statusCode (responseStatus response) /= 200
-    then error $ show $ responseStatus response
+    then do
+    putStrLn url
+    error $ show $ responseStatus response
     else do
     let body = responseBody response
         doc = parseLBS body
@@ -75,7 +77,9 @@ httpFileSize mgr url = do
   request <- parseRequest url
   response <- httpNoBody (request {method = "HEAD"}) mgr
   if statusCode (responseStatus response) /= 200
-    then error $ show $ responseStatus response
+    then do
+    putStrLn url
+    error $ show $ responseStatus response
     else do
     let headers = responseHeaders response
     return $ read . B.unpack <$> lookup hContentLength headers
@@ -83,12 +87,16 @@ httpFileSize mgr url = do
 -- | Try to get the modification time (Last-Modified field) of an http file
 --
 -- Raises an error if the http request fails.
+--
+-- @since 0.1.1
 httpLastModified :: Manager -> String -> IO (Maybe UTCTime)
 httpLastModified mgr url = do
   request <- parseRequest url
   response <- httpNoBody (request {method = "HEAD"}) mgr
   if statusCode (responseStatus response) /= 200
-    then error $ show $ responseStatus response
+    then do
+    putStrLn url
+    error $ show $ responseStatus response
     else do
     let headers = responseHeaders response
         mdate = lookup "Last-Modified" headers
@@ -96,6 +104,8 @@ httpLastModified mgr url = do
 
 -- | alias for 'newManager tlsManagerSettings'
 -- so one does not need to import http-client etc
+--
+-- @since 0.1.2
 httpManager :: IO Manager
 httpManager =
   newManager tlsManagerSettings
