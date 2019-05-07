@@ -15,4 +15,4 @@ The library is intended for listing the files in http file directories,
 but since http directories are just html pages it can actually be used
 to list the links (href's) on any html webpage.
 
-See the haddock documentation for usage.
+See an [example](https://github.com/juhp/http-directory/blob/master/example/latest-ghc.hs) and the haddock documentation for usage.
