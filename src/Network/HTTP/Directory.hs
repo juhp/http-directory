@@ -6,11 +6,9 @@ A library for listing "files" in an http "directory".
 @
 import Network.HTTP.Directory
 import qualified Data.Text as T
-import Network.HTTP.Client (newManager)
-import Network.HTTP.Client.TLS (tlsManagerSettings)
 
 main = do
-  mgr <- newManager tlsManagerSettings
+  mgr <- httpManager
   files <- httpDirectory mgr "https://example.com/some/dir/"
   mapM_ T.putStrLn files
   httpFileSize mgr (head files) >>= print
