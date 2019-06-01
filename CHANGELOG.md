@@ -2,6 +2,9 @@
 
 `http-directory` uses [PVP Versioning](https://pvp.haskell.org).
 
+## 0.1.3
+- add httpExists
+
 ## 0.1.2
 - add httpManager convenient function
 - print url when result not 200

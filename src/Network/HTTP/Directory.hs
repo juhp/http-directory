@@ -18,6 +18,7 @@ main = do
 
 module Network.HTTP.Directory
        ( httpDirectory,
+         httpExists,
          httpFileSize,
          httpLastModified,
          httpManager,
@@ -66,6 +67,15 @@ httpDirectory mgr url = do
         doc = parseLBS body
         cursor = fromDocument doc
     return $ concatMap (attribute "href") $ cursor $// element "a"
+
+-- | Test if an file (url) exists
+--
+-- @since 0.1.3
+httpExists :: Manager -> String -> IO Bool
+httpExists mgr url = do
+  request <- parseRequest url
+  response <- httpNoBody (request {method = "HEAD"}) mgr
+  return $ statusCode (responseStatus response) == 200
 
 -- | Try to get the filesize (Content-Length field) of an http file
 --
