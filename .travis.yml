@@ -7,5 +7,6 @@ ghc:
 - 8.2.2
 - 8.4.4
 - 8.6.5
+install: true
 script:
 - cabal new-build && cabal new-haddock
