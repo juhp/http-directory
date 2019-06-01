@@ -22,3 +22,6 @@ git-push:
 
 copy:
 	cp -p dist/$(NAME)-$(VERSION).tar.gz ~/fedora/haskell/ghc-$(NAME)/
+
+publish:
+	cabal upload --publish dist/$(NAME)-$(VERSION).tar.gz
