@@ -39,7 +39,8 @@ library
                        time,
                        xml-conduit
   if impl(ghc<8.0)
-      Build-depends: semigroups
+      build-depends: semigroups,
+                     cryptonite < 0.26
 
   ghc-options:         -fwarn-missing-signatures
                        -Wall
