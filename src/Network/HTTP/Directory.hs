@@ -37,11 +37,12 @@ import Data.Text (Text)
 import Data.Time.Clock (UTCTime)
 
 import Network.HTTP.Client (hrRedirects, httpLbs, httpNoBody, Manager, method,
-                            newManager, parseRequest, responseBody,
-                            responseHeaders, responseOpenHistory, responseStatus)
+                            newManager, parseRequest,
+                            Request, Response, responseBody, responseHeaders,
+                            responseOpenHistory, responseStatus)
 import Network.HTTP.Client.TLS (tlsManagerSettings)
 import Network.HTTP.Date (httpDateToUTC, parseHTTPDate)
-import Network.HTTP.Types (hContentLength, hLocation, statusCode)
+import Network.HTTP.Types (hContentLength, hLocation, methodHead, statusCode)
 
 import Text.HTML.DOM (parseLBS)
 import Text.XML.Cursor
@@ -73,8 +74,7 @@ httpDirectory mgr url = do
 -- @since 0.1.3
 httpExists :: Manager -> String -> IO Bool
 httpExists mgr url = do
-  request <- parseRequest url
-  response <- httpNoBody (request {method = "HEAD"}) mgr
+  response <- httpHead mgr url
   return $ statusCode (responseStatus response) == 200
 
 -- | Try to get the filesize (Content-Length field) of an http file
@@ -82,8 +82,7 @@ httpExists mgr url = do
 -- Raises an error if the http request fails.
 httpFileSize :: Manager -> String -> IO (Maybe Integer)
 httpFileSize mgr url = do
-  request <- parseRequest url
-  response <- httpNoBody (request {method = "HEAD"}) mgr
+  response <- httpHead mgr url
   if statusCode (responseStatus response) /= 200
     then do
     putStrLn url
@@ -99,8 +98,7 @@ httpFileSize mgr url = do
 -- @since 0.1.1
 httpLastModified :: Manager -> String -> IO (Maybe UTCTime)
 httpLastModified mgr url = do
-  request <- parseRequest url
-  response <- httpNoBody (request {method = "HEAD"}) mgr
+  response <- httpHead mgr url
   if statusCode (responseStatus response) /= 200
     then do
     putStrLn url
@@ -122,11 +120,26 @@ httpManager =
 -- (ie last redirect is listed first)
 httpRedirects :: Manager -> String -> IO [B.ByteString]
 httpRedirects mgr url = do
-  request <- parseRequest url
-  respHist <- responseOpenHistory (request {method = "HEAD"}) mgr
+  request <- parseRequestHead url
+  respHist <- responseOpenHistory request mgr
   return $ reverse $ mapMaybe (lookup hLocation . responseHeaders . snd) $ hrRedirects respHist
 
 -- | Return final redirect for an url
 httpRedirect :: Manager -> String -> IO (Maybe B.ByteString)
 httpRedirect mgr url =
   listToMaybe <$> httpRedirects mgr url
+
+-- parseRequest with HEAD
+--
+-- @since 0.1.3
+parseRequestHead :: String -> IO Request
+parseRequestHead url = do
+  request <- parseRequest url
+  return $ request {method = methodHead}
+
+-- @since 0.1.3
+httpHead :: Manager -> String -> IO (Response ())
+httpHead mgr url = do
+  request <- parseRequestHead url
+  httpNoBody request mgr
+
