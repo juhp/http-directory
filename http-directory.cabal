@@ -4,7 +4,8 @@ version:             0.1.3
 synopsis:            http directory listing library
 description:
             Library for listing the files (links) in an http directory.
-            Also can check the size and modtime of files, and for url redirects.
+            Also can check the size, existence, modtime of files,
+            and url redirects.
 homepage:            https://github.com/juhp/http-directory
 bug-reports:         https://github.com/juhp/http-directory/issues
 license:             MIT
