@@ -1,6 +1,6 @@
 cabal-version:       1.18
 name:                http-directory
-version:             0.1.3
+version:             0.1.4
 synopsis:            http directory listing library
 description:
             Library for listing the files (links) in an http directory.

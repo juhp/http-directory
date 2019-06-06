@@ -2,6 +2,10 @@
 
 `http-directory` uses [PVP Versioning](https://pvp.haskell.org).
 
+## 0.1.4 (2019-06-xx)
+- add httpRawDirectory
+- httpDirectory now filters out absolutes hrefs
+
 ## 0.1.3 (2019-06-04)
 - add httpExists
 

@@ -18,6 +18,7 @@ main = do
 
 module Network.HTTP.Directory
        ( httpDirectory,
+         httpRawDirectory,
          httpExists,
          httpFileSize,
          httpLastModified,
@@ -32,8 +33,9 @@ import Control.Applicative ((<$>))
 #endif
 
 import qualified Data.ByteString.Char8 as B
+import Data.List (nub)
 import Data.Maybe
-import Data.Text (Text)
+import Data.Text (Text, isPrefixOf, pack)
 import Data.Time.Clock (UTCTime)
 
 import Network.HTTP.Client (hrRedirects, httpLbs, httpNoBody, Manager, method,
@@ -55,8 +57,31 @@ import Text.XML.Cursor
 -- you may need to use 'httpRedirect' to determine
 -- the actual final url prefix for relative links
 -- (files).
+--
+-- (Filters "non-files/subdirs" @since 0.1.4 (before that was just httpRawDirectory)
 httpDirectory :: Manager -> String -> IO [Text]
 httpDirectory mgr url = do
+  hrefs <- httpRawDirectory mgr url
+  return $ nub $ filter (not . or . flist [isHttp, ("/" `isPrefixOf`), (pack "../" ==)]) hrefs
+  where
+    isHttp loc = "http:" `isPrefixOf` loc || "https:" `isPrefixOf` loc
+
+-- picked from swish
+flist :: [a->b] -> a -> [b]
+flist fs a = map ($ a) fs
+
+-- | List all the hrefs in an http directory html file.
+--
+-- Raises an error if the http request fails.
+--
+-- Note if the directory (webpage) url is redirected to a different path
+-- you may need to use 'httpRedirect' to determine
+-- the actual final url prefix for relative links
+-- (files).
+--
+-- @since 0.1.4
+httpRawDirectory :: Manager -> String -> IO [Text]
+httpRawDirectory mgr url = do
   request <- parseRequest url
   response <- httpLbs request mgr
   if statusCode (responseStatus response) /= 200
