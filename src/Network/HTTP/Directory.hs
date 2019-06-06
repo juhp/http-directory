@@ -62,7 +62,7 @@ import Text.XML.Cursor
 httpDirectory :: Manager -> String -> IO [Text]
 httpDirectory mgr url = do
   hrefs <- httpRawDirectory mgr url
-  return $ nub $ filter (not . or . flist [isHttp, ("/" `isPrefixOf`), (pack "../" ==)]) hrefs
+  return $ nub $ filter (not . or . flist [isHttp, ("/" `isPrefixOf`), (pack "../" ==), ("?" `isPrefixOf`)]) hrefs
   where
     isHttp loc = "http:" `isPrefixOf` loc || "https:" `isPrefixOf` loc
 
