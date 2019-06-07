@@ -18,12 +18,14 @@ main = do
 
 module Network.HTTP.Directory
        ( httpDirectory,
+         httpDirectory',
          httpRawDirectory,
          httpExists,
          httpFileSize,
          httpLastModified,
          httpManager,
          httpRedirect,
+         httpRedirect',
          httpRedirects
        ) where
 
@@ -69,6 +71,14 @@ httpDirectory mgr url = do
 -- picked from swish
 flist :: [a->b] -> a -> [b]
 flist fs a = map ($ a) fs
+
+-- | Like httpDirectory but uses own Manager
+--
+-- @since 0.1.4
+httpDirectory' :: String -> IO [Text]
+httpDirectory' url = do
+  mgr <- httpManager
+  httpDirectory mgr url
 
 -- | List all the hrefs in an http directory html file.
 --
@@ -154,6 +164,14 @@ httpRedirect :: Manager -> String -> IO (Maybe B.ByteString)
 httpRedirect mgr url =
   listToMaybe <$> httpRedirects mgr url
 
+-- | Like httpRedirect but uses own Manager.
+--
+-- @since 0.1.4
+httpRedirect' :: String -> IO (Maybe B.ByteString)
+httpRedirect' url = do
+  mgr <- httpManager
+  listToMaybe <$> httpRedirects mgr url
+
 -- parseRequest with HEAD
 --
 -- @since 0.1.3
@@ -167,4 +185,3 @@ httpHead :: Manager -> String -> IO (Response ())
 httpHead mgr url = do
   request <- parseRequestHead url
   httpNoBody request mgr
-

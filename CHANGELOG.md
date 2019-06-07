@@ -4,7 +4,8 @@
 
 ## 0.1.4 (2019-06-xx)
 - add httpRawDirectory
-- httpDirectory now filters out absolutes hrefs
+- httpDirectory now filters out absolutes hrefs and sort links
+- add httpDirectory' and httpRedirect' variants with own Manager
 
 ## 0.1.3 (2019-06-04)
 - add httpExists
