@@ -167,15 +167,13 @@ httpRedirect' url = do
   mgr <- httpManager
   listToMaybe <$> httpRedirects mgr url
 
--- parseRequest with HEAD
---
--- @since 0.1.3
+-- since 0.1.3
 parseRequestHead :: String -> IO Request
 parseRequestHead url = do
   request <- parseRequest url
   return $ request {method = methodHead}
 
--- @since 0.1.3
+-- since 0.1.3
 httpHead :: Manager -> String -> IO (Response ())
 httpHead mgr url = do
   request <- parseRequestHead url
