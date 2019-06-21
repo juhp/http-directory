@@ -27,6 +27,7 @@ module Network.HTTP.Directory
          httpRedirect,
          httpRedirect',
          httpRedirects,
+         isHttpUrl,
          Manager
        ) where
 
@@ -179,3 +180,10 @@ httpHead :: Manager -> String -> IO (Response ())
 httpHead mgr url = do
   request <- parseRequestHead url
   httpNoBody request mgr
+
+-- | Test if string starts with http[s]:
+--
+-- @since 0.1.5
+isHttpUrl :: String -> Bool
+isHttpUrl loc = "http:" `L.isPrefixOf` loc || "https:" `L.isPrefixOf` loc
+
