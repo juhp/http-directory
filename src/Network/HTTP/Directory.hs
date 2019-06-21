@@ -26,7 +26,8 @@ module Network.HTTP.Directory
          httpManager,
          httpRedirect,
          httpRedirect',
-         httpRedirects
+         httpRedirects,
+         Manager
        ) where
 
 #if (defined(MIN_VERSION_base) && MIN_VERSION_base(4,8,0))

@@ -4,6 +4,7 @@
 
 ## 0.1.5 (2019-06-xx)
 - also filter ".." and "#" from httpDirectory
+- export Manager
 
 ## 0.1.4 (2019-06-07)
 - add httpRawDirectory
