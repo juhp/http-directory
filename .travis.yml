@@ -14,8 +14,5 @@ ghc:
 - 7.8.4
 - 7.6.3
 
-install:
-- cabal configure && cabal build && cabal haddock
-
 script:
-- echo "no tests"
+- cabal build && cabal haddock
