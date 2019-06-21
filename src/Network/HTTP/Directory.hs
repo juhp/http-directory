@@ -33,6 +33,7 @@ module Network.HTTP.Directory
 #else
 import Control.Applicative ((<$>))
 #endif
+import Control.Monad (when)
 
 import qualified Data.ByteString.Char8 as B
 import qualified Data.List as L
@@ -92,15 +93,11 @@ httpRawDirectory :: Manager -> String -> IO [Text]
 httpRawDirectory mgr url = do
   request <- parseRequest url
   response <- httpLbs request mgr
-  if statusCode (responseStatus response) /= 200
-    then do
-    putStrLn url
-    error $ show $ responseStatus response
-    else do
-    let body = responseBody response
-        doc = parseLBS body
-        cursor = fromDocument doc
-    return $ concatMap (attribute "href") $ cursor $// element "a"
+  checkResponse url response
+  let body = responseBody response
+      doc = parseLBS body
+      cursor = fromDocument doc
+  return $ concatMap (attribute "href") $ cursor $// element "a"
 
 -- | Test if an file (url) exists
 --
@@ -116,13 +113,9 @@ httpExists mgr url = do
 httpFileSize :: Manager -> String -> IO (Maybe Integer)
 httpFileSize mgr url = do
   response <- httpHead mgr url
-  if statusCode (responseStatus response) /= 200
-    then do
-    putStrLn url
-    error $ show $ responseStatus response
-    else do
-    let headers = responseHeaders response
-    return $ read . B.unpack <$> lookup hContentLength headers
+  checkResponse url response
+  let headers = responseHeaders response
+  return $ read . B.unpack <$> lookup hContentLength headers
 
 -- | Try to get the modification time (Last-Modified field) of an http file
 --
@@ -132,14 +125,16 @@ httpFileSize mgr url = do
 httpLastModified :: Manager -> String -> IO (Maybe UTCTime)
 httpLastModified mgr url = do
   response <- httpHead mgr url
-  if statusCode (responseStatus response) /= 200
-    then do
+  checkResponse url response
+  let headers = responseHeaders response
+      mdate = lookup "Last-Modified" headers
+  return $ httpDateToUTC <$> maybe Nothing parseHTTPDate mdate
+
+checkResponse :: String -> Response r -> IO ()
+checkResponse url response =
+  when (statusCode (responseStatus response) /= 200) $ do
     putStrLn url
     error $ show $ responseStatus response
-    else do
-    let headers = responseHeaders response
-        mdate = lookup "Last-Modified" headers
-    return $ httpDateToUTC <$> maybe Nothing parseHTTPDate mdate
 
 -- | alias for 'newManager tlsManagerSettings'
 -- so one does not need to import http-client etc
