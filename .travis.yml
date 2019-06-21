@@ -1,5 +1,10 @@
 language: haskell
 dist: xenial
+
+cache:
+  directories:
+  - "$HOME/.cabal"
+
 ghc:
 - 8.6.5
 - 8.4.4
@@ -8,5 +13,9 @@ ghc:
 - 7.10.3
 - 7.8.4
 - 7.6.3
-script:
+
+install:
 - cabal configure && cabal build && cabal haddock
+
+script:
+- echo "no tests"
