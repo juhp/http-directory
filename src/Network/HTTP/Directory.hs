@@ -40,7 +40,7 @@ import Control.Monad (when)
 import qualified Data.ByteString.Char8 as B
 import qualified Data.List as L
 import Data.Maybe
-import Data.Text (Text, isPrefixOf)
+import Data.Text (Text, isPrefixOf, isInfixOf)
 import Data.Time.Clock (UTCTime)
 
 import Network.HTTP.Client (hrRedirects, httpLbs, httpNoBody, Manager, method,
@@ -67,7 +67,7 @@ import Text.XML.Cursor
 httpDirectory :: Manager -> String -> IO [Text]
 httpDirectory mgr url = do
   hrefs <- httpRawDirectory mgr url
-  return $ L.nub $ filter (not . or . flist (map isPrefixOf ["http:","https:","/","?"] ++ [(`elem` ["../", "..", "#"])])) hrefs
+  return $ L.nub $ filter (not . or . flist (map isPrefixOf ["/","?"] ++ [(`elem` ["../", "..", "#"]), (":" `isInfixOf`)])) hrefs
 
 -- picked from swish
 flist :: [a->b] -> a -> [b]

@@ -3,7 +3,7 @@
 `http-directory` uses [PVP Versioning](https://pvp.haskell.org).
 
 ## 0.1.5 (2019-06-xx)
-- also filter ".." and "#" from httpDirectory
+- also filter "..", "#" and ":" from httpDirectory
 - export Manager
 - add isHttpUrl
 
