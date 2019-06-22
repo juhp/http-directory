@@ -9,10 +9,12 @@ import qualified Data.Text as T
 
 main = do
   mgr <- httpManager
-  files <- httpDirectory mgr "https://example.com/some/dir/"
+  let url = "https://example.com/some/dir/"
+  files <- httpDirectory mgr url
   mapM_ T.putStrLn files
-  httpFileSize mgr (head files) >>= print
-  httpLastModified mgr (head files) >>= print
+  let file = url </> T.unpack (head files)
+  httpFileSize mgr file >>= print
+  httpLastModified mgr file >>= print
 @
 -}
 
