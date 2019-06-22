@@ -13,6 +13,7 @@ ghc:
 - 7.10.3
 - 7.8.4
 - 7.6.3
+- 7.4.2
 
 script:
 - cabal build && cabal haddock && cabal test
