@@ -65,7 +65,8 @@ import Text.XML.Cursor
 -- the actual final url prefix for relative links
 -- (files).
 --
--- (Filters "non-files/subdirs" @since 0.1.4 (before that was just httpRawDirectory)
+-- (since 0.1.4 it filters "non-files/subdirs" -
+--  before that it was just httpRawDirectory)
 httpDirectory :: Manager -> String -> IO [Text]
 httpDirectory mgr url = do
   hrefs <- httpRawDirectory mgr url
