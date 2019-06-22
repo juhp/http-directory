@@ -15,4 +15,4 @@ ghc:
 - 7.6.3
 
 script:
-- cabal build && cabal haddock
+- cabal build && cabal haddock && cabal test

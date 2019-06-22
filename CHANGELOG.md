@@ -6,6 +6,7 @@
 - also filter "..", "#" and ":" from httpDirectory
 - export Manager
 - add isHttpUrl
+- testsuite added
 
 ## 0.1.4 (2019-06-07)
 - add httpRawDirectory
