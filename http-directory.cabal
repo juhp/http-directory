@@ -3,7 +3,7 @@ name:                http-directory
 version:             0.1.5
 synopsis:            http directory listing library
 description:
-            Library for listing the files (links) in an http directory.
+            Library for listing the files (href's) in an http directory.
             It can also check the size, existence, modtime of files,
             and for url redirects.
 homepage:            https://github.com/juhp/http-directory
