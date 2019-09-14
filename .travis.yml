@@ -1,9 +1,14 @@
 language: haskell
 dist: xenial
 
+branches:
+  only:
+  - master
+
 cache:
   directories:
   - "$HOME/.cabal"
+  - "$HOME/.ghc"
 
 ghc:
 - 8.6.5
