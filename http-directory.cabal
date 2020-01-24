@@ -29,7 +29,6 @@ source-repository head
 library
   hs-source-dirs:      src
   exposed-modules:     Network.HTTP.Directory
-                       
 
   build-depends:       base < 5,
                        bytestring,

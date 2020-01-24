@@ -2,6 +2,11 @@
 
 `http-directory` uses [PVP Versioning](https://pvp.haskell.org).
 
+## 0.1.6 (2020-01-24)
+- filter relative/paths and relative?queries
+- add `url </> file`
+- add trailingSlash for url and noTrailingSlash for filename
+
 ## 0.1.5 (2019-06-xx)
 - also filter "..", "#" and ":" from httpDirectory
 - export Manager
