@@ -221,10 +221,12 @@ s </> t | last s == '/' = init s </> t
         | head t == '/' = s </> tail t
 s </> t = s ++ "/" ++ t
 
--- | Make sure an url ends "/"
+-- | Make sure an url ends with "/"
 --
--- @trailingSlash "url" == "url/"@
--- @trailingSlash "url/" == "url/"@
+-- @
+-- trailingSlash "url" == "url/"
+-- trailingSlash "url/" == "url/"
+-- @
 --
 -- @since 0.1.6
 trailingSlash :: String -> String
@@ -232,10 +234,12 @@ trailingSlash "" = ""
 trailingSlash str =
   if last str == '/' then str else str ++ "/"
 
--- | Remove trailing slash(es) from filename or url
+-- | Remove all trailing slashes from filename or url
 --
--- @noTrailingSlash "dir/" == "dir"@
--- @noTrailingSlash "dir//" == "dir"@
+-- @
+-- noTrailingSlash "dir/" == "dir"
+-- noTrailingSlash "dir//" == "dir"
+-- @
 --
 -- @since 0.1.6
 noTrailingSlash :: Text -> Text
