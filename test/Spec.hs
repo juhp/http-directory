@@ -76,7 +76,7 @@ spec = do
 
   describe "httpRedirect" $
     it "fedora" $ do
-      mredir <- httpRedirect' "http://dl.fedoraproject.org"
+      mredir <- httpRedirect' "http://fedoraproject.org"
       isJust mredir `shouldBe` True
 
   describe "httpRedirect" $ do
