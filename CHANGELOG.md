@@ -2,6 +2,10 @@
 
 `http-directory` uses [PVP Versioning](https://pvp.haskell.org).
 
+## 0.1.7 (2020-01-24)
+- drop </> since it conflicts with filepath
+- deprecates 0.1.6
+
 ## 0.1.6 (2020-01-24)
 - filter relative/paths and relative?queries
 - add `url </> file`

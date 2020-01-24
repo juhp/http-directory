@@ -104,16 +104,6 @@ spec = do
          ["mailto:one@where", "somefile", "an.iso", "package.tgz"]
           `shouldBe` False
 
-  describe "</>" $ do
-    it "url + dir" $
-      "http://example.com//" </> "dir/" `shouldBe` "http://example.com/dir/"
-
-    it "dir + dir" $
-      "abc" </> "def" `shouldBe` "abc/def"
-
-    it "dir + dir" $
-      "abc/" </> "/def" `shouldBe` "abc/def"
-
   describe "trailing slash" $ do
     it "add" $
       trailingSlash "http://example.com/dir" `shouldBe` "http://example.com/dir/"

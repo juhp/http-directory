@@ -32,8 +32,7 @@ module Network.HTTP.Directory
          isHttpUrl,
          trailingSlash,
          noTrailingSlash,
-         Manager,
-         (</>)
+         Manager
        ) where
 
 #if (defined(MIN_VERSION_base) && MIN_VERSION_base(4,8,0))
@@ -207,19 +206,6 @@ httpHead mgr url = do
 -- @since 0.1.5
 isHttpUrl :: String -> Bool
 isHttpUrl loc = "http:" `L.isPrefixOf` loc || "https:" `L.isPrefixOf` loc
-
--- | This </> eats extra slashes.
---
--- @"dir//" </> "/subdir/" = "dir/subdir/"@
---
--- @since 0.1.6
-infixr 5 </>
-(</>) :: String -> String -> String
-"" </> s = s
-s </> "" = s
-s </> t | last s == '/' = init s </> t
-        | head t == '/' = s </> tail t
-s </> t = s ++ "/" ++ t
 
 -- | Make sure an url ends with "/"
 --
