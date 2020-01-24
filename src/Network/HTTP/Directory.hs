@@ -30,6 +30,8 @@ module Network.HTTP.Directory
          httpRedirect',
          httpRedirects,
          isHttpUrl,
+         trailingSlash,
+         noTrailingSlash,
          Manager,
          (</>)
        ) where
@@ -218,6 +220,26 @@ s </> "" = s
 s </> t | last s == '/' = init s </> t
         | head t == '/' = s </> tail t
 s </> t = s ++ "/" ++ t
+
+-- | Make sure an url ends "/"
+--
+-- @trailingSlash "url" == "url/"@
+-- @trailingSlash "url/" == "url/"@
+--
+-- @since 0.1.6
+trailingSlash :: String -> String
+trailingSlash "" = ""
+trailingSlash str =
+  if last str == '/' then str else str ++ "/"
+
+-- | Remove trailing slash(es) from filename or url
+--
+-- @noTrailingSlash "dir/" == "dir"@
+-- @noTrailingSlash "dir//" == "dir"@
+--
+-- @since 0.1.6
+noTrailingSlash :: Text -> Text
+noTrailingSlash = T.dropWhileEnd (== '/')
 
 -- from simple-cmd
 error' :: String -> a

@@ -1,4 +1,5 @@
 import Data.Maybe
+import Data.Text (pack)
 import Test.Hspec
 import Network.HTTP.Directory
 
@@ -112,3 +113,16 @@ spec = do
 
     it "dir + dir" $
       "abc/" </> "/def" `shouldBe` "abc/def"
+
+  describe "trailing slash" $ do
+    it "add" $
+      trailingSlash "http://example.com/dir" `shouldBe` "http://example.com/dir/"
+
+    it "idempotent" $
+      trailingSlash "http://example.com/" `shouldBe` "http://example.com/"
+
+    it "remove" $
+      noTrailingSlash (pack "abc/") `shouldBe` pack "abc"
+
+    it "remove all" $
+      noTrailingSlash (pack "abc/def//") `shouldBe` pack "abc/def"
