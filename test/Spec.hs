@@ -93,12 +93,12 @@ spec = do
       length redirs `shouldBe` 2
 
   describe "isHttpUrl" $ do
-    it "urls" $
+    it "http" $
       all isHttpUrl
         ["http://dl.fedoraproject.org", "https://haskell.org/"]
           `shouldBe` True
 
-    it "urls" $
+    it "non-http" $
       any isHttpUrl
          ["mailto:one@where", "somefile", "an.iso", "package.tgz"]
           `shouldBe` False
