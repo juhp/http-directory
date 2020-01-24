@@ -42,21 +42,25 @@ import Control.Monad (when)
 import qualified Data.ByteString.Char8 as B
 import qualified Data.List as L
 import Data.Maybe
-import Data.Text (Text, isPrefixOf, isInfixOf)
+import Data.Text (Text)
+import qualified Data.Text as T
 import Data.Time.Clock (UTCTime)
 
 import Network.HTTP.Client (hrRedirects, httpLbs, httpNoBody, Manager, method,
-                            newManager, parseRequest,
-                            Request, Response, responseBody, responseHeaders,
+                            newManager, parseRequest, Request,
+                            Response, responseBody, responseHeaders,
                             responseOpenHistory, responseStatus)
 import Network.HTTP.Client.TLS (tlsManagerSettings)
 import Network.HTTP.Date (httpDateToUTC, parseHTTPDate)
 import Network.HTTP.Types (hContentLength, hLocation, methodHead, statusCode)
+import Network.URI (parseURI, URI(..))
 
 import Text.HTML.DOM (parseLBS)
 import Text.XML.Cursor
 
--- | List the file links (hrefs) in an http directory
+-- | List the files (hrefs) in an http directory
+--
+-- It filters out absolute urls & paths, queries, '..', and '#' links.
 --
 -- Raises an error if the http request fails.
 --
@@ -65,16 +69,30 @@ import Text.XML.Cursor
 -- the actual final url prefix for relative links
 -- (files).
 --
--- (since 0.1.4 it filters "non-files/subdirs" -
---  before that it was just httpRawDirectory)
+-- (before 0.1.4 it was just httpRawDirectory)
 httpDirectory :: Manager -> String -> IO [Text]
 httpDirectory mgr url = do
   hrefs <- httpRawDirectory mgr url
-  return $ L.nub $ filter (not . or . flist (map isPrefixOf ["/","?"] ++ [(`elem` ["../", "..", "#"]), (":" `isInfixOf`)])) hrefs
+  return $ defaultFilesFilter uri hrefs
+  where
+    uri = parseURI url
 
--- picked from swish
-flist :: [a->b] -> a -> [b]
-flist fs a = map ($ a) fs
+defaultFilesFilter :: Maybe URI -> [Text] -> [Text]
+defaultFilesFilter mUri =
+  L.nub . filter (not . or . flist ((map T.isInfixOf [":", "?", "/"]) ++ [(`elem` ["../", "..", "#"])])) . map removePath
+  where
+    -- picked from swish
+    flist :: [a->b] -> a -> [b]
+    flist fs a = map ($ a) fs
+
+    removePath :: Text -> Text
+    removePath t =
+      case mpath of
+        Nothing -> t
+        Just path ->
+          fromMaybe t $ T.stripPrefix (T.pack path) t
+
+    mpath = uriPath <$> mUri
 
 -- | Like httpDirectory but uses own Manager
 --
@@ -135,11 +153,12 @@ httpLastModified mgr url = do
       mdate = lookup "Last-Modified" headers
   return $ httpDateToUTC <$> maybe Nothing parseHTTPDate mdate
 
+-- conflicts with Request
 checkResponse :: String -> Response r -> IO ()
 checkResponse url response =
   when (statusCode (responseStatus response) /= 200) $ do
     putStrLn url
-    error $ show $ responseStatus response
+    error' $ show $ responseStatus response
 
 -- | alias for 'newManager tlsManagerSettings'
 -- so one does not need to import http-client etc
@@ -186,3 +205,10 @@ httpHead mgr url = do
 isHttpUrl :: String -> Bool
 isHttpUrl loc = "http:" `L.isPrefixOf` loc || "https:" `L.isPrefixOf` loc
 
+-- from simple-cmd
+error' :: String -> a
+#if (defined(MIN_VERSION_base) && MIN_VERSION_base(4,9,0))
+error' = errorWithoutStackTrace
+#else
+error' = error
+#endif
