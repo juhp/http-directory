@@ -82,7 +82,7 @@ httpDirectory mgr url = do
 
 defaultFilesFilter :: Maybe URI -> [Text] -> [Text]
 defaultFilesFilter mUri =
-  L.nub . filter (not . or . flist ((map T.isInfixOf [":", "?", "/"]) ++ [(`elem` ["../", "..", "#"])])) . map removePath
+  L.nub . filter (not . or . flist (map T.isInfixOf [":", "?", "/"] ++ [(`elem` ["../", "..", "#"])])) . map removePath
   where
     -- picked from swish
     flist :: [a->b] -> a -> [b]
@@ -154,7 +154,7 @@ httpLastModified mgr url = do
   checkResponse url response
   let headers = responseHeaders response
       mdate = lookup "Last-Modified" headers
-  return $ httpDateToUTC <$> maybe Nothing parseHTTPDate mdate
+  return $ httpDateToUTC <$> (parseHTTPDate =<< mdate)
 
 -- conflicts with Request
 checkResponse :: String -> Response r -> IO ()
