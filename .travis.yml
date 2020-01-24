@@ -1,5 +1,6 @@
 language: haskell
-dist: xenial
+dist: bionic
+cabal: 2.4
 
 branches:
   only:
@@ -8,9 +9,9 @@ branches:
 cache:
   directories:
   - "$HOME/.cabal"
-  - "$HOME/.ghc"
 
 ghc:
+- 8.8.2
 - 8.6.5
 - 8.4.4
 - 8.2.2
@@ -20,5 +21,8 @@ ghc:
 - 7.6.3
 - 7.4.2
 
+install:
+- cabal new-update
+
 script:
-- cabal build && cabal haddock && cabal test
+- cabal new-build && cabal new-haddock && cabal new-test
