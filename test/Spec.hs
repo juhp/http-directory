@@ -50,7 +50,7 @@ spec = do
     it "httpbin/get" $ do
       mgr <- httpManager
       msize <- httpFileSize mgr "https://httpbin.org/get"
-      msize `shouldBe` Nothing
+      isJust msize `shouldBe` True
 
     it "httpbin/0B" $ do
       mgr <- httpManager
