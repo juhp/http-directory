@@ -15,7 +15,7 @@ The library is intended for listing the files in http file directories,
 but since http directories are just html pages it can also be used
 to list the links (href's) on any html webpage.
 
-## Usage Example
+## Usage examples
 
 ```haskell
 Network.HTTP.Directory> :type httpDirectory'
@@ -25,4 +25,4 @@ Network.HTTP.Directory> httpDirectory' "https://hackage.haskell.org/package/base
 "CPUTime","Console","Environment","IO","Mem","Posix"]
 ```
 
-See more [examples](https://github.com/juhp/http-directory/blob/master/example/) and the [latest haddock documentation](https://hackage.haskell.org/package/http-directory/docs/Network-HTTP-Directory.html) for more usage details.
+See more [examples](https://github.com/juhp/http-directory/blob/master/example/) and the [latest haddock documentation](https://hackage.haskell.org/package/http-directory/docs/Network-HTTP-Directory.html) for more details.
