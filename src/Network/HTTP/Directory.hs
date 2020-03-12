@@ -87,6 +87,7 @@ defaultFilesFilter mUri =
     flist :: [a->b] -> a -> [b]
     flist fs a = map ($ a) fs
 
+    -- may return "" which nonTrailingSlash then removes
     removePath :: Text -> Text
     removePath t =
       case fmap uriPath mUri of
@@ -94,9 +95,14 @@ defaultFilesFilter mUri =
         Just path ->
           fromMaybe t $ T.stripPrefix (T.pack path) t
 
+    -- True means remove
     nonTrailingSlash :: Text -> Bool
+    nonTrailingSlash "" = True     -- from removed uriPath
+    nonTrailingSlash "/" = True
     nonTrailingSlash t =
-      "/" `T.isInfixOf` T.init t
+      if T.length t == 1 then False
+      else "/" `T.isInfixOf` T.init t
+
 -- | Like httpDirectory but uses own Manager
 --
 -- @since 0.1.4
