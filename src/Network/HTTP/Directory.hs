@@ -81,7 +81,7 @@ httpDirectory mgr url = do
 
 defaultFilesFilter :: Maybe URI -> [Text] -> [Text]
 defaultFilesFilter mUri =
-  L.nub . filter (not . or . flist (map T.isInfixOf [":", "?"] ++ [nonTrailingSlash] ++ [(`elem` ["../", "..", "#"])])) . map removePath
+  L.nub . filter (not . or . flist (map T.isInfixOf [":", "?", "#"] ++ [nonTrailingSlash] ++ [(`elem` ["../", ".."])])) . map removePath
   where
     -- picked from swish
     flist :: [a->b] -> a -> [b]
