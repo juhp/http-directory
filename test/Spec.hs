@@ -19,6 +19,10 @@ spec = do
       fs <- httpDirectory mgr "http://httpbin.org/"
       fs `shouldBe` []
 
+    it "fedora releases" $ do
+      fs <- httpDirectory' "https://dl.fedoraproject.org/pub/fedora/linux/releases/"
+      null fs `shouldBe` False
+
     it "my src hackage" $ do
       fs <- httpDirectory' "https://hackage.haskell.org/package/http-directory/src/"
       null fs `shouldBe` False

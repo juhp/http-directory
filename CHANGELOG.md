@@ -2,6 +2,9 @@
 
 `http-directory` uses [PVP Versioning](https://pvp.haskell.org).
 
+## 0.1.8 (2020-03-12)
+- fix regression in 0.1.6 and 0.1.7: do not filter "*/" files
+
 ## 0.1.7 (2020-01-24)
 - drop </> since it conflicts with filepath
 - deprecates 0.1.6
