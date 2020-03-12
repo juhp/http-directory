@@ -22,8 +22,12 @@ spec = do
       fs <- httpDirectory' "https://hackage.haskell.org/package/http-directory/src/"
       null fs `shouldBe` False
 
-    it "myself hackage" $ do
+    it "self hackage" $ do
       fs <- httpDirectory' "https://hackage.haskell.org/package/http-directory"
+      null fs `shouldBe` False
+
+    it "self hackage" $ do
+      fs <- httpDirectory' "https://mirrors.kernel.org/"
       null fs `shouldBe` False
 
     it "404" $
