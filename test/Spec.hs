@@ -9,11 +9,6 @@ main = hspec $ parallel spec
 spec :: Spec
 spec = do
   describe "httpDirectory" $ do
-    it "empty google" $ do
-      mgr <- httpManager
-      fs <- httpDirectory mgr "https://google.com/"
-      fs `shouldBe` []
-
     it "empty httpbin" $ do
       mgr <- httpManager
       fs <- httpDirectory mgr "http://httpbin.org/"
