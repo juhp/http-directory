@@ -90,18 +90,20 @@ defaultFilesFilter mUri =
     -- may return "" which nonTrailingSlash then removes
     removePath :: Text -> Text
     removePath t =
-      case fmap uriPath mUri of
+      case murlPath of
         Nothing -> t
         Just path ->
-          fromMaybe t $ T.stripPrefix (T.pack path) t
+          fromMaybe t $ T.stripPrefix path t
+
+    murlPath :: Maybe Text
+    murlPath = fmap (T.pack . trailingSlash . uriPath) mUri
 
     -- True means remove
     nonTrailingSlash :: Text -> Bool
     nonTrailingSlash "" = True     -- from removed uriPath
     nonTrailingSlash "/" = True
     nonTrailingSlash t =
-      if T.length t == 1 then False
-      else "/" `T.isInfixOf` T.init t
+      (T.length t > 1) && ("/" `T.isInfixOf` T.init t)
 
 -- | Like httpDirectory but uses own Manager
 --
