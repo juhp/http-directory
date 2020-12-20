@@ -4,7 +4,7 @@
 [![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Stackage Lts](http://stackage.org/package/http-directory/badge/lts)](http://stackage.org/lts/package/http-directory)
 [![Stackage Nightly](http://stackage.org/package/http-directory/badge/nightly)](http://stackage.org/nightly/package/http-directory)
-[![Build status](https://secure.travis-ci.org/juhp/http-directory.svg)](https://travis-ci.org/juhp/http-directory)
+[![Build Status](https://travis-ci.com/juhp/http-directory.svg?branch=master)](https://travis-ci.com/juhp/http-directory)
 
 A simple library for reading http directories.
 
