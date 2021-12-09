@@ -75,10 +75,9 @@ import Text.XML.Cursor
 --
 -- Note if the directory (webpage) url is redirected to a different path
 -- you may need to use 'httpRedirect' to determine
--- the actual final url prefix for relative links
--- (files).
+-- the actual final url prefix for relative links (files).
 --
--- (before 0.1.4 it was just httpRawDirectory)
+-- (Before 0.1.4 this was the same as httpRawDirectory)
 httpDirectory :: Manager -> String -> IO [Text]
 httpDirectory mgr url = do
   hrefs <- httpRawDirectory mgr url
@@ -181,6 +180,8 @@ httpFileSize mgr url = do
 -- | Try to get the filesize (Content-Length field) of an http file
 --
 -- Raises an error if the http request fails.
+--
+-- @since 0.1.9
 httpFileSize' :: String -> IO (Maybe Integer)
 httpFileSize' url = do
   response <- httpHead' url
@@ -305,7 +306,9 @@ error' = error
 
 -- | This +/+ eats extra slashes.
 --
--- @"dir//" +/+ "/subdir/" = "dir/subdir/"@
+-- @
+-- "dir//" +/+ "/subdir/" = "dir/subdir/"
+-- @
 --
 -- @since 0.1.9
 infixr 5 +/+
