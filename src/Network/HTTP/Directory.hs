@@ -8,13 +8,13 @@ import Network.HTTP.Directory
 import qualified Data.Text as T
 
 main = do
-  mgr <- httpManager
-  let url = "https://example.com/some/dir/"
-  files <- httpDirectory mgr url
+  mgr <- 'httpManager'
+  let url = \"https://example.com/some/dir/\"
+  files <- 'httpDirectory' mgr url
   mapM_ T.putStrLn files
-  let file = url </> T.unpack (head files)
-  httpFileSize mgr file >>= print
-  httpLastModified mgr file >>= print
+  let file = url '</>' T.unpack (head files)
+  'httpFileSize' mgr file >>= print
+  'httpLastModified' mgr file >>= print
 @
 -}
 
