@@ -20,8 +20,9 @@ extra-doc-files:     README.md
                    , example/Makefile
                    , example/latest-ghc.hs
                    , example/list-page.hs
-tested-with:         GHC == 7.4.2, GHC == 7.6.3, GHC == 7.8.4, GHC == 7.10.3,
-                     GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.4, GHC == 8.6.5
+tested-with:         GHC== 7.4.2 || == 7.6.3 || == 7.8.4 || == 7.10.3
+                     || == 8.0.2 || == 8.2.2 || == 8.4.4 || == 8.6.5
+                     || == 8.8.4 || == 8.10.5
 
 source-repository head
   type:                git
@@ -61,7 +62,7 @@ test-suite test
 
     default-language: Haskell2010
 
-    ghc-options:   -Wall -threaded -rtsopts -with-rtsopts=-N
+    ghc-options:   -Wall
     cpp-options:   -DDEBUG
     build-depends: base >= 4 && < 5
                  , hspec >= 1.3
