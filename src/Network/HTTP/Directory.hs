@@ -16,6 +16,8 @@ main = do
   'httpFileSize\'' file >>= print
   'httpLastModified\'' file >>= print
 @
+
+The main methods use http-client and most of the primed ones http-conduit.
 -}
 
 module Network.HTTP.Directory
