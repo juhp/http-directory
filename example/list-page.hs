@@ -5,6 +5,5 @@ import System.Environment
 main :: IO ()
 main = do
   [url] <- getArgs
-  mgr <- httpManager
-  dirs <- httpDirectory mgr url
+  dirs <- httpDirectory' url
   mapM_ T.putStrLn dirs
