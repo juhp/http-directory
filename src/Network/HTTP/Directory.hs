@@ -9,12 +9,12 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as T
 
 main = do
-  let url = \"https://example.com/some/dir/\"
-  files <- httpDirectory' url
+  let url = \"https:\/\/example.com\/some\/dir\/\"
+  files <- 'httpDirectory\'' url
   mapM_ T.putStrLn files
   let file = url '+/+' T.unpack (head files)
-  httpFileSize' file >>= print
-  httpLastModified' file >>= print
+  'httpFileSize\'' file >>= print
+  'httpLastModified\'' file >>= print
 @
 -}
 
@@ -272,11 +272,11 @@ httpHead' url = do
 isHttpUrl :: String -> Bool
 isHttpUrl loc = "http:" `L.isPrefixOf` loc || "https:" `L.isPrefixOf` loc
 
--- | Make sure an url ends with "/"
+-- | Make sure an url ends with "\/"
 --
 -- @
--- trailingSlash "url" == "url/"
--- trailingSlash "url/" == "url/"
+-- trailingSlash "url" == "url\/"
+-- trailingSlash "url\/" == "url\/"
 -- @
 --
 -- @since 0.1.6
@@ -288,8 +288,8 @@ trailingSlash str =
 -- | Remove all trailing slashes from filename or url
 --
 -- @
--- noTrailingSlash "dir/" == "dir"
--- noTrailingSlash "dir//" == "dir"
+-- noTrailingSlash "dir\/" == "dir"
+-- noTrailingSlash "dir\/\/" == "dir"
 -- @
 --
 -- @since 0.1.6
@@ -304,10 +304,10 @@ error' = errorWithoutStackTrace
 error' = error
 #endif
 
--- | This +/+ eats extra slashes.
+-- | This +\/+ eats extra slashes.
 --
 -- @
--- "dir//" +/+ "/subdir/" = "dir/subdir/"
+-- "dir\/\/" +\/+ "\/subdir\/" = "dir\/subdir\/"
 -- @
 --
 -- @since 0.1.9
