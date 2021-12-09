@@ -116,11 +116,7 @@ spec = do
       mredir <- httpRedirect' "http://fedoraproject.org"
       isJust mredir `shouldBe` True
 
-  describe "httpRedirect" $ do
-    it "fedora" $ do
-      mredir <- httpRedirect' "http://download.fedoraproject.org/pub/fedora/linux"
-      isJust mredir `shouldBe` True
-
+  describe "httpRedirect'" $ do
     it "httpbin" $ do
       -- https://github.com/postmanlabs/httpbin/issues/617
       mredir <- httpRedirect' "http://httpbingo.org/relative-redirect/1"
