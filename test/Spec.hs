@@ -111,14 +111,14 @@ spec = do
       mtime <- httpLastModified' "https://haskell.org/"
       isJust mtime `shouldBe` True
 
-  describe "httpRedirect" $
-    it "fedora" $ do
-      mredir <- httpRedirect' "http://fedoraproject.org"
+  -- https://github.com/postmanlabs/httpbin/issues/617
+  describe "httpRedirect" $ do
+    it "httpbingo" $ do
+      mgr <- httpManager
+      mredir <- httpRedirect mgr "http://httpbingo.org/relative-redirect/1"
       isJust mredir `shouldBe` True
 
-  describe "httpRedirect'" $ do
-    it "httpbin" $ do
-      -- https://github.com/postmanlabs/httpbin/issues/617
+    it "httpbingo'" $ do
       mredir <- httpRedirect' "http://httpbingo.org/relative-redirect/1"
       isJust mredir `shouldBe` True
 
