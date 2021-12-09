@@ -50,6 +50,19 @@ spec = do
       httpExists mgr "http://nowhereparticular"
       `shouldThrow` anyException
 
+  describe "httpExists'" $ do
+    it "google" $ do
+      exists <- httpExists' "https://google.com/"
+      exists `shouldBe` True
+
+    it "404" $ do
+      exists <- httpExists' "https://httpbin.org/404"
+      exists `shouldBe` False
+
+    it "domain" $ do
+      httpExists' "http://nowhereparticular"
+      `shouldThrow` anyException
+
   describe "httpFileSize" $ do
     it "httpbin/get" $ do
       mgr <- httpManager
@@ -71,10 +84,31 @@ spec = do
       msize <- httpFileSize mgr "https://raw.githubusercontent.com/juhp/http-directory/master/http-directory.cabal"
       isJust msize `shouldBe` True
 
-  describe "httpLastModified" $
+  describe "httpFileSize'" $ do
+    it "httpbin/get" $ do
+      msize <- httpFileSize' "https://httpbin.org/get"
+      isJust msize `shouldBe` True
+
+    it "httpbin/0B" $ do
+      msize <- httpFileSize' "https://httpbin.org/bytes/0"
+      msize `shouldBe` Just 0
+
+    it "httpbin/64B" $ do
+      msize <- httpFileSize' "https://httpbin.org/bytes/64"
+      msize `shouldBe` Just 64
+
+    it "cabal" $ do
+      msize <- httpFileSize' "https://raw.githubusercontent.com/juhp/http-directory/master/http-directory.cabal"
+      isJust msize `shouldBe` True
+
+  describe "httpLastModified" $ do
     it "httpbin" $ do
       mgr <- httpManager
       mtime <- httpLastModified mgr "https://haskell.org/"
+      isJust mtime `shouldBe` True
+
+    it "httpbin'" $ do
+      mtime <- httpLastModified' "https://haskell.org/"
       isJust mtime `shouldBe` True
 
   describe "httpRedirect" $
@@ -88,12 +122,13 @@ spec = do
       isJust mredir `shouldBe` True
 
     it "httpbin" $ do
-      mredir <- httpRedirect' "http://httpbin.org/relative-redirect/1"
+      -- https://github.com/postmanlabs/httpbin/issues/617
+      mredir <- httpRedirect' "http://httpbingo.org/relative-redirect/1"
       isJust mredir `shouldBe` True
 
     it "3 redirs" $ do
       mgr <- httpManager
-      redirs <- httpRedirects mgr "http://httpbin.org/relative-redirect/2"
+      redirs <- httpRedirects mgr "http://httpbingo.org/relative-redirect/2"
       length redirs `shouldBe` 2
 
   describe "isHttpUrl" $ do
@@ -107,7 +142,7 @@ spec = do
          ["mailto:one@where", "somefile", "an.iso", "package.tgz"]
           `shouldBe` False
 
-  describe "trailing slash" $ do
+  describe "trailingSlash" $ do
     it "add" $
       trailingSlash "http://example.com/dir" `shouldBe` "http://example.com/dir/"
 
@@ -119,3 +154,25 @@ spec = do
 
     it "remove all" $
       noTrailingSlash (pack "abc/def//") `shouldBe` pack "abc/def"
+
+  describe "+/+" $ do
+    it "join" $
+      "http://example.com/dir" +/+ "file" `shouldBe` "http://example.com/dir/file"
+
+    it "join/" $
+      "http://example.com/dir" +/+ "/file" `shouldBe` "http://example.com/dir/file"
+
+    it "/join" $
+      "http://example.com/dir/" +/+ "file" `shouldBe` "http://example.com/dir/file"
+
+    it "/join/" $
+      "http://example.com/dir/" +/+ "/file" `shouldBe` "http://example.com/dir/file"
+
+    it "join /" $
+      "http://example.com/dir" +/+ "file/" `shouldBe` "http://example.com/dir/file/"
+
+    it "identity" $
+      "http://example.com/dir" +/+ "" `shouldBe` "http://example.com/dir"
+
+    it "/identity" $
+      "http://example.com/dir/" +/+ "" `shouldBe` "http://example.com/dir/"

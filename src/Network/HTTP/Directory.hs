@@ -22,9 +22,13 @@ module Network.HTTP.Directory
        ( httpDirectory,
          httpDirectory',
          httpRawDirectory,
+         httpRawDirectory',
          httpExists,
+         httpExists',
          httpFileSize,
+         httpFileSize',
          httpLastModified,
+         httpLastModified',
          httpManager,
          httpRedirect,
          httpRedirect',
@@ -43,6 +47,7 @@ import Control.Applicative ((<$>))
 import Control.Monad (when)
 
 import qualified Data.ByteString.Char8 as B
+import qualified Data.ByteString.Lazy.Char8 as BL
 import qualified Data.List as L
 import Data.Maybe
 import Data.Text (Text)
@@ -55,6 +60,7 @@ import Network.HTTP.Client (hrRedirects, httpLbs, httpNoBody, Manager, method,
                             responseOpenHistory, responseStatus)
 import Network.HTTP.Client.TLS (tlsManagerSettings)
 import Network.HTTP.Date (httpDateToUTC, parseHTTPDate)
+import qualified Network.HTTP.Simple as S
 import Network.HTTP.Types (hContentLength, hLocation, methodHead, statusCode)
 import Network.URI (parseURI, URI(..))
 
@@ -76,9 +82,7 @@ import Text.XML.Cursor
 httpDirectory :: Manager -> String -> IO [Text]
 httpDirectory mgr url = do
   hrefs <- httpRawDirectory mgr url
-  return $ defaultFilesFilter uri hrefs
-  where
-    uri = parseURI url
+  return $ defaultFilesFilter (parseURI url) hrefs
 
 defaultFilesFilter :: Maybe URI -> [Text] -> [Text]
 defaultFilesFilter mUri =
@@ -111,8 +115,19 @@ defaultFilesFilter mUri =
 -- @since 0.1.4
 httpDirectory' :: String -> IO [Text]
 httpDirectory' url = do
-  mgr <- httpManager
-  httpDirectory mgr url
+  hrefs <- httpRawDirectory' url
+  return $ defaultFilesFilter (parseURI url) hrefs
+
+httpRawDirectoryInternal :: (Request -> IO (Response BL.ByteString)) -> String
+                         -> IO [Text]
+httpRawDirectoryInternal httpreq url = do
+  request <- parseRequest url
+  response <- httpreq request
+  checkResponse url response
+  let body = responseBody response
+      doc = parseLBS body
+      cursor = fromDocument doc
+  return $ concatMap (attribute "href") $ cursor $// element "a"
 
 -- | List all the hrefs in an http directory html file.
 --
@@ -125,14 +140,17 @@ httpDirectory' url = do
 --
 -- @since 0.1.4
 httpRawDirectory :: Manager -> String -> IO [Text]
-httpRawDirectory mgr url = do
-  request <- parseRequest url
-  response <- httpLbs request mgr
-  checkResponse url response
-  let body = responseBody response
-      doc = parseLBS body
-      cursor = fromDocument doc
-  return $ concatMap (attribute "href") $ cursor $// element "a"
+httpRawDirectory mgr = httpRawDirectoryInternal (flip httpLbs mgr)
+
+-- | List all the hrefs in an http directory html file.
+--
+-- Raises an error if the http request fails.
+--
+-- Like httpRawDirectory but uses Network.HTTP.Simple (http-conduit)
+--
+-- @since 0.1.9
+httpRawDirectory' :: String -> IO [Text]
+httpRawDirectory' = httpRawDirectoryInternal S.httpLBS
 
 -- | Test if an file (url) exists
 --
@@ -140,6 +158,14 @@ httpRawDirectory mgr url = do
 httpExists :: Manager -> String -> IO Bool
 httpExists mgr url = do
   response <- httpHead mgr url
+  return $ statusCode (responseStatus response) == 200
+
+-- | Test if an file (url) exists
+--
+-- @since 0.1.9
+httpExists' :: String -> IO Bool
+httpExists' url = do
+  response <- httpHead' url
   return $ statusCode (responseStatus response) == 200
 
 -- | Try to get the filesize (Content-Length field) of an http file
@@ -152,6 +178,16 @@ httpFileSize mgr url = do
   let headers = responseHeaders response
   return $ read . B.unpack <$> lookup hContentLength headers
 
+-- | Try to get the filesize (Content-Length field) of an http file
+--
+-- Raises an error if the http request fails.
+httpFileSize' :: String -> IO (Maybe Integer)
+httpFileSize' url = do
+  response <- httpHead' url
+  checkResponse url response
+  let headers = responseHeaders response
+  return $ read . B.unpack <$> lookup hContentLength headers
+
 -- | Try to get the modification time (Last-Modified field) of an http file
 --
 -- Raises an error if the http request fails.
@@ -160,6 +196,19 @@ httpFileSize mgr url = do
 httpLastModified :: Manager -> String -> IO (Maybe UTCTime)
 httpLastModified mgr url = do
   response <- httpHead mgr url
+  checkResponse url response
+  let headers = responseHeaders response
+      mdate = lookup "Last-Modified" headers
+  return $ httpDateToUTC <$> (parseHTTPDate =<< mdate)
+
+-- | Try to get the modification time (Last-Modified field) of an http file
+--
+-- Raises an error if the http request fails.
+--
+-- @since 0.1.9
+httpLastModified' :: String -> IO (Maybe UTCTime)
+httpLastModified' url = do
+  response <- httpHead' url
   checkResponse url response
   let headers = responseHeaders response
       mdate = lookup "Last-Modified" headers
@@ -210,6 +259,11 @@ httpHead :: Manager -> String -> IO (Response ())
 httpHead mgr url = do
   request <- parseRequestHead url
   httpNoBody request mgr
+
+httpHead' :: String -> IO (Response ())
+httpHead' url = do
+  request <- parseRequestHead url
+  S.httpNoBody request
 
 -- | Test if string starts with http[s]:
 --

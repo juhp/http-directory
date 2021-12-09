@@ -2,6 +2,12 @@
 
 `http-directory` uses [PVP Versioning](https://pvp.haskell.org).
 
+## 0.1.9 (2021-12-09)
+- httpDirectory' now uses Network.HTTP.Simple
+- also add httpRawDirectory', httpExists', httpFileSize', httpLastModified'
+  which all use Network.HTTP.Simple too
+- add +/+ path combinator
+
 ## 0.1.8 (2020-03-12)
 - fix regression in 0.1.6 and 0.1.7: do not filter "*/" files
 - more careful filter handling of '/'
