@@ -6,15 +6,15 @@ A library for listing "files" in an http "directory".
 @
 import Network.HTTP.Directory
 import qualified Data.Text as T
+import qualified Data.Text.IO as T
 
 main = do
-  mgr <- 'httpManager'
   let url = \"https://example.com/some/dir/\"
-  files <- 'httpDirectory' mgr url
+  files <- httpDirectory' url
   mapM_ T.putStrLn files
-  let file = url '</>' T.unpack (head files)
-  'httpFileSize' mgr file >>= print
-  'httpLastModified' mgr file >>= print
+  let file = url '+/+' T.unpack (head files)
+  httpFileSize' file >>= print
+  httpLastModified' file >>= print
 @
 -}
 
