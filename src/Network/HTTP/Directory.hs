@@ -138,6 +138,7 @@ httpRawDirectoryInternal httpreq url = do
 -- (files).
 --
 -- @since 0.1.4
+{- HLINT ignore "Use section" -}
 httpRawDirectory :: Manager -> String -> IO [Text]
 httpRawDirectory mgr = httpRawDirectoryInternal (flip httpLbs mgr)
 
