@@ -45,6 +45,8 @@ library
   if impl(ghc<8.0)
       build-depends: semigroups,
                      cryptonite < 0.26
+  if impl(ghc < 8.3)
+    build-depends:     tagstream-conduit < 0.5.6
 
   ghc-options:         -fwarn-missing-signatures
                        -Wall
