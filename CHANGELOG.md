@@ -2,6 +2,9 @@
 
 `http-directory` uses [PVP Versioning](https://pvp.haskell.org).
 
+## 0.1.10 (2022-06-11)
+- add httpFileSizeTime and httpFileHeaders
+
 ## 0.1.9 (2021-12-09)
 - httpDirectory' now uses Network.HTTP.Simple
 - also add httpRawDirectory', httpExists', httpFileSize', httpLastModified'

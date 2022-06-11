@@ -2,7 +2,7 @@
 
 [![Hackage](https://img.shields.io/hackage/v/http-directory.svg)](https://hackage.haskell.org/package/http-directory)
 [![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Stackage Lts](http://stackage.org/package/http-directory/badge/lts)](http://stackage.org/lts/package/http-directory)
+[![Stackage LTS](http://stackage.org/package/http-directory/badge/lts)](http://stackage.org/lts/package/http-directory)
 [![Stackage Nightly](http://stackage.org/package/http-directory/badge/nightly)](http://stackage.org/nightly/package/http-directory)
 
 A simple library for reading http directories.
@@ -13,6 +13,9 @@ html-conduit and xml-conduit to parse the html for links.
 The library is intended for listing the files in http file directories,
 but since http directories are just html pages it can also be used
 to list the links (href's) on any html webpage.
+
+Additionally there are methods for checking the size and modification time,
+and a few other helper functions.
 
 ## Usage examples
 

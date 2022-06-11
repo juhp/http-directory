@@ -10,11 +10,11 @@ import qualified Data.Text.IO as T
 
 main = do
   let url = \"https:\/\/example.com\/some\/dir\/\"
-  files <- 'httpDirectory\'' url
+  files <- httpDirectory\' url
   mapM_ T.putStrLn files
   let file = url '+/+' T.unpack (head files)
-  'httpFileSize\'' file >>= print
-  'httpLastModified\'' file >>= print
+  httpFileSize\' file >>= print
+  httpLastModified\' file >>= print
 @
 
 The main methods use http-client and most of the primed ones http-conduit.
@@ -119,7 +119,7 @@ defaultFilesFilter mUri =
     nonTrailingSlash t =
       (T.length t > 1) && ("/" `T.isInfixOf` T.init t)
 
--- | Like httpDirectory but uses own Manager
+-- | Like httpDirectory but uses the global Manager
 --
 -- @since 0.1.4
 httpDirectory' :: String -> IO [Text]
@@ -209,7 +209,7 @@ httpLastModified mgr url = do
 
 -- | Try to get the modification time (Last-Modified field) of an http file
 --
--- Raises an error if the http request fails.
+-- Raises an error if the http request fails. Uses global Manager
 --
 -- @since 0.1.9
 httpLastModified' :: String -> IO (Maybe UTCTime)
@@ -232,7 +232,7 @@ httpFileSizeTime mgr url = do
   return (msize, mtime)
 
 -- | Try to get the filesize and modification time of an http file
--- Global manager version.
+-- Global Manager version.
 --
 -- Raises an error if the http request fails.
 --
@@ -256,8 +256,8 @@ httpFileHeaders mgr url = do
   checkResponse url response
   return $ responseHeaders response
 
--- | Return the HTTP headers of an http file
--- Global manager version.
+-- | Return the HTTP headers of an http file.
+-- Global Manager version.
 --
 -- Raises an error if the http request fails.
 --
@@ -275,7 +275,7 @@ checkResponse url response =
     putStrLn url
     error' $ show $ responseStatus response
 
--- | alias for 'newManager tlsManagerSettings'
+-- | Alias for 'newManager tlsManagerSettings'
 -- so one does not need to import http-client etc
 --
 -- @since 0.1.2
@@ -296,7 +296,7 @@ httpRedirect :: Manager -> String -> IO (Maybe B.ByteString)
 httpRedirect mgr url =
   listToMaybe <$> httpRedirects mgr url
 
--- | Like httpRedirect but uses own Manager.
+-- | Like httpRedirect but uses global Manager.
 --
 -- @since 0.1.4
 httpRedirect' :: String -> IO (Maybe B.ByteString)
