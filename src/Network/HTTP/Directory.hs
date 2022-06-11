@@ -33,6 +33,8 @@ module Network.HTTP.Directory
          httpLastModified',
          httpFileSizeTime,
          httpFileSizeTime',
+         httpFileHeaders,
+         httpFileHeaders',
          httpManager,
          httpRedirect,
          httpRedirect',
@@ -52,6 +54,9 @@ import Control.Monad (when)
 
 import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy.Char8 as BL
+#if MIN_VERSION_base(4,11,0)
+import Data.Functor ((<&>))
+#endif
 import qualified Data.List as L
 import Data.Maybe
 import Data.Text (Text)
@@ -65,7 +70,8 @@ import Network.HTTP.Client (hrRedirects, httpLbs, httpNoBody, Manager, method,
 import Network.HTTP.Client.TLS (tlsManagerSettings)
 import Network.HTTP.Date (httpDateToUTC, parseHTTPDate)
 import qualified Network.HTTP.Simple as S
-import Network.HTTP.Types (hContentLength, hLocation, methodHead, statusCode)
+import Network.HTTP.Types (hContentLength, hLocation, hLastModified,
+                           methodHead, statusCode, ResponseHeaders)
 import Network.URI (parseURI, URI(..))
 
 import Text.HTML.DOM (parseLBS)
@@ -176,11 +182,9 @@ httpExists' url = do
 --
 -- Raises an error if the http request fails.
 httpFileSize :: Manager -> String -> IO (Maybe Integer)
-httpFileSize mgr url = do
-  response <- httpHead mgr url
-  checkResponse url response
-  let headers = responseHeaders response
-  return $ read . B.unpack <$> lookup hContentLength headers
+httpFileSize mgr url =
+  httpFileHeaders mgr url <&>
+  fmap (read . B.unpack) . lookup hContentLength
 
 -- | Try to get the filesize (Content-Length field) of an http file
 --
@@ -188,11 +192,9 @@ httpFileSize mgr url = do
 --
 -- @since 0.1.9
 httpFileSize' :: String -> IO (Maybe Integer)
-httpFileSize' url = do
-  response <- httpHead' url
-  checkResponse url response
-  let headers = responseHeaders response
-  return $ read . B.unpack <$> lookup hContentLength headers
+httpFileSize' url =
+  httpFileHeaders' url <&>
+  fmap (read . B.unpack) . lookup hContentLength
 
 -- | Try to get the modification time (Last-Modified field) of an http file
 --
@@ -201,10 +203,8 @@ httpFileSize' url = do
 -- @since 0.1.1
 httpLastModified :: Manager -> String -> IO (Maybe UTCTime)
 httpLastModified mgr url = do
-  response <- httpHead mgr url
-  checkResponse url response
-  let headers = responseHeaders response
-      mdate = lookup "Last-Modified" headers
+  headers <- httpFileHeaders mgr url
+  let mdate = lookup hLastModified headers
   return $ httpDateToUTC <$> (parseHTTPDate =<< mdate)
 
 -- | Try to get the modification time (Last-Modified field) of an http file
@@ -214,12 +214,9 @@ httpLastModified mgr url = do
 -- @since 0.1.9
 httpLastModified' :: String -> IO (Maybe UTCTime)
 httpLastModified' url = do
-  response <- httpHead' url
-  checkResponse url response
-  let headers = responseHeaders response
-      mdate = lookup "Last-Modified" headers
+  headers <- httpFileHeaders' url
+  let mdate = lookup hLastModified headers
   return $ httpDateToUTC <$> (parseHTTPDate =<< mdate)
-
 
 -- | Try to get the filesize and modification time of an http file
 --
@@ -228,11 +225,9 @@ httpLastModified' url = do
 -- @since 0.1.10
 httpFileSizeTime :: Manager -> String -> IO (Maybe Integer, Maybe UTCTime)
 httpFileSizeTime mgr url = do
-  response <- httpHead mgr url
-  checkResponse url response
-  let headers = responseHeaders response
-      msize = read . B.unpack <$> lookup hContentLength headers
-      mdate = lookup "Last-Modified" headers
+  headers <- httpFileHeaders mgr url
+  let msize = read . B.unpack <$> lookup hContentLength headers
+      mdate = lookup hLastModified headers
       mtime = httpDateToUTC <$> (parseHTTPDate =<< mdate)
   return (msize, mtime)
 
@@ -244,13 +239,34 @@ httpFileSizeTime mgr url = do
 -- @since 0.1.10
 httpFileSizeTime' :: String -> IO (Maybe Integer, Maybe UTCTime)
 httpFileSizeTime' url = do
-  response <- httpHead' url
-  checkResponse url response
-  let headers = responseHeaders response
-      msize = read . B.unpack <$> lookup hContentLength headers
-      mdate = lookup "Last-Modified" headers
+  headers <- httpFileHeaders' url
+  let msize = read . B.unpack <$> lookup hContentLength headers
+      mdate = lookup hLastModified headers
       mtime = httpDateToUTC <$> (parseHTTPDate =<< mdate)
   return (msize, mtime)
+
+-- | Return the HTTP headers for a file
+--
+-- Raises an error if the http request fails.
+--
+-- @since 0.1.10
+httpFileHeaders :: Manager -> String -> IO ResponseHeaders
+httpFileHeaders mgr url = do
+  response <- httpHead mgr url
+  checkResponse url response
+  return $ responseHeaders response
+
+-- | Return the HTTP headers of an http file
+-- Global manager version.
+--
+-- Raises an error if the http request fails.
+--
+-- @since 0.1.10
+httpFileHeaders' :: String -> IO ResponseHeaders
+httpFileHeaders' url = do
+  response <- httpHead' url
+  checkResponse url response
+  return $ responseHeaders response
 
 -- conflicts with Request
 checkResponse :: String -> Response r -> IO ()
@@ -355,3 +371,11 @@ s +/+ "" = s
 s +/+ t | last s == '/' = init s +/+ t
         | head t == '/' = s +/+ tail t
 s +/+ t = s ++ "/" ++ t
+
+
+#if !MIN_VERSION_base(4,11,0)
+infixl 1 <&>
+
+(<&>) :: Functor f => f a -> (a -> b) -> f b
+as <&> f = f <$> as
+#endif
