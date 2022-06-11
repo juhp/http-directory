@@ -31,6 +31,8 @@ module Network.HTTP.Directory
          httpFileSize',
          httpLastModified,
          httpLastModified',
+         httpFileSizeTime,
+         httpFileSizeTime',
          httpManager,
          httpRedirect,
          httpRedirect',
@@ -217,6 +219,38 @@ httpLastModified' url = do
   let headers = responseHeaders response
       mdate = lookup "Last-Modified" headers
   return $ httpDateToUTC <$> (parseHTTPDate =<< mdate)
+
+
+-- | Try to get the filesize and modification time of an http file
+--
+-- Raises an error if the http request fails.
+--
+-- @since 0.1.10
+httpFileSizeTime :: Manager -> String -> IO (Maybe Integer, Maybe UTCTime)
+httpFileSizeTime mgr url = do
+  response <- httpHead mgr url
+  checkResponse url response
+  let headers = responseHeaders response
+      msize = read . B.unpack <$> lookup hContentLength headers
+      mdate = lookup "Last-Modified" headers
+      mtime = httpDateToUTC <$> (parseHTTPDate =<< mdate)
+  return (msize, mtime)
+
+-- | Try to get the filesize and modification time of an http file
+-- Global manager version.
+--
+-- Raises an error if the http request fails.
+--
+-- @since 0.1.10
+httpFileSizeTime' :: String -> IO (Maybe Integer, Maybe UTCTime)
+httpFileSizeTime' url = do
+  response <- httpHead' url
+  checkResponse url response
+  let headers = responseHeaders response
+      msize = read . B.unpack <$> lookup hContentLength headers
+      mdate = lookup "Last-Modified" headers
+      mtime = httpDateToUTC <$> (parseHTTPDate =<< mdate)
+  return (msize, mtime)
 
 -- conflicts with Request
 checkResponse :: String -> Response r -> IO ()

@@ -102,14 +102,19 @@ spec = do
       isJust msize `shouldBe` True
 
   describe "httpLastModified" $ do
-    it "httpbin" $ do
+    it "haskell" $ do
       mgr <- httpManager
-      mtime <- httpLastModified mgr "https://haskell.org/"
+      mtime <- httpLastModified mgr "https://www.haskell.org/"
       isJust mtime `shouldBe` True
 
-    it "httpbin'" $ do
-      mtime <- httpLastModified' "https://haskell.org/"
+    it "haskell" $ do
+      mtime <- httpLastModified' "https://www.haskell.org/"
       isJust mtime `shouldBe` True
+
+  describe "httpFileSizeTime" $ do
+    it "haskell" $ do
+      (msize, mtime) <- httpFileSizeTime' "https://www.haskell.org/"
+      (isJust msize, isJust mtime) `shouldBe` (True,True)
 
   -- https://github.com/postmanlabs/httpbin/issues/617
   describe "httpRedirect" $ do
