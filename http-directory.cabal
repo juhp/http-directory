@@ -28,6 +28,10 @@ source-repository head
   type:                git
   location:            https://github.com/juhp/http-directory.git
 
+flag executable
+  description:   build cli tool
+  default:       False
+
 library
   hs-source-dirs:      src
   exposed-modules:     Network.HTTP.Directory
@@ -67,6 +71,17 @@ library
                        -Wpartial-fields
   if impl(ghc >= 8.10)
     ghc-options:       -Wunused-packages
+
+executable http-directory
+  main-is: app/Main.hs
+  build-depends: base < 5
+               , http-directory
+               , simple-cmd-args
+               , text
+  if flag(executable)
+    Buildable:      True
+  else
+    Buildable:      False
 
 test-suite test
   main-is: Spec.hs
