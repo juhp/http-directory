@@ -75,10 +75,11 @@ library
 
 executable http-directory
   main-is: app/Main.hs
-  build-depends: base < 5
-               , http-directory
-               , simple-cmd-args
-               , text
+  build-depends:       base < 5
+                     , http-directory
+                     , simple-cmd-args
+                     , text
+  default-language:    Haskell2010
   if flag(executable)
     Buildable:      True
   else
