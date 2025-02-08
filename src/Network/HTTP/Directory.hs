@@ -33,6 +33,7 @@ module Network.HTTP.Directory
          httpLastModified',
          httpFileSizeTime,
          httpFileSizeTime',
+         httpFileSizeAndTime',
          httpFileHeaders,
          httpFileHeaders',
          httpManager,
@@ -241,6 +242,25 @@ httpFileSizeTime' url = do
       mdate = lookup hLastModified headers
       mtime = httpDateToUTC <$> (parseHTTPDate =<< mdate)
   return (msize, mtime)
+
+-- | Try to get the filesize and modification time together of an http file
+-- Unlike httpFileSizeTime', it combines the results into one Maybe.
+--
+-- Uses global Manager.
+--
+-- Raises an error if the http request fails.
+--
+-- @since 0.1.11
+httpFileSizeAndTime' :: String -> IO (Maybe (Integer, UTCTime))
+httpFileSizeAndTime' url = do
+  headers <- httpFileHeaders' url
+  return $ msizetime headers
+  where
+    msizetime headers = do
+      size <- read . B.unpack <$> lookup hContentLength headers
+      date <- lookup hLastModified headers
+      time <- httpDateToUTC <$> (parseHTTPDate date)
+      return (size,time)
 
 -- | Return the HTTP headers for a file
 --
