@@ -46,10 +46,6 @@ module Network.HTTP.Directory
          (+/+)
        ) where
 
-#if (defined(MIN_VERSION_base) && MIN_VERSION_base(4,8,0))
-#else
-import Control.Applicative ((<$>))
-#endif
 import Control.Monad (when)
 
 import qualified Data.ByteString.Char8 as B
@@ -353,11 +349,7 @@ noTrailingSlash = T.dropWhileEnd (== '/')
 
 -- from simple-cmd
 error' :: String -> a
-#if (defined(MIN_VERSION_base) && MIN_VERSION_base(4,9,0))
 error' = errorWithoutStackTrace
-#else
-error' = error
-#endif
 
 -- | This +\/+ eats extra slashes.
 --

@@ -37,7 +37,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     Network.HTTP.Directory
 
-  build-depends:       base < 5,
+  build-depends:       base >= 4.9 && < 5,
                        bytestring,
                        html-conduit,
                        http-client,
