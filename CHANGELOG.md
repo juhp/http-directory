@@ -2,6 +2,13 @@
 
 `http-directory` uses [PVP Versioning](https://pvp.haskell.org).
 
+## 0.1.11 (2025-02-08)
+- add httpFileSizeAndTime'
+- tests: switch from httpbingo to httpbin.org/redirect
+- redefine +/+ with dropWhile/End to avoid head/init/tail/last
+- add simple cli tool
+- remove support for ghc < 8.2 (base < 4.9)
+
 ## 0.1.10 (2022-06-11)
 - add httpFileSizeTime and httpFileHeaders
 
