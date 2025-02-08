@@ -12,7 +12,7 @@ license:             MIT
 license-file:        LICENSE
 author:              Jens Petersen
 maintainer:          juhpetersen@gmail.com
-copyright:           2019-2022 Jens Petersen
+copyright:           2019-2022,2024-2025 Jens Petersen
 category:            Network
 build-type:          Simple
 extra-doc-files:     README.md
@@ -20,9 +20,10 @@ extra-doc-files:     README.md
                    , example/Makefile
                    , example/latest-ghc.hs
                    , example/list-page.hs
-tested-with:         GHC== 7.8.4 || == 7.10.3 || == 8.0.2 || == 8.2.2
+tested-with:         GHC== 8.0.2 || == 8.2.2
                      || == 8.4.4 || == 8.6.5  || == 8.8.4 || == 8.10.7
-                     || == 9.0.2
+                     || == 9.0.2 || == 9.2.8  || == 9.4.8 || == 9.6.6
+                     || == 9.8.4 || == 9.10.1
 
 source-repository head
   type:                git
