@@ -24,5 +24,6 @@ jobs:
       - run: cabal update
       - run: cabal build
       - run: cabal haddock
+        if: ${{ ! contains(fromJSON('["8.2", "8.4"]'), matrix.ghc) }}
       - run: cabal sdist
       - run: cabal test
