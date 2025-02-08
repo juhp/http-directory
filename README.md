@@ -19,9 +19,7 @@ and a few other helper functions.
 
 ## Usage examples
 
-```haskell
-Network.HTTP.Directory> :type httpDirectory'
-httpDirectory' :: String -> IO [Text]
+```shellsession
 Network.HTTP.Directory> httpDirectory' "https://hackage.haskell.org/package/base/src/System"
 ["CPUTime.hsc","Environment.hs","Exit.hs","IO.hs","Info.hs","Mem.hs","Timeout.hs",
 "CPUTime","Console","Environment","IO","Mem","Posix"]
