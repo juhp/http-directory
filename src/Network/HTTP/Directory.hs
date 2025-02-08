@@ -259,7 +259,7 @@ httpFileSizeAndTime' url = do
     msizetime headers = do
       size <- read . B.unpack <$> lookup hContentLength headers
       date <- lookup hLastModified headers
-      time <- httpDateToUTC <$> (parseHTTPDate date)
+      time <- httpDateToUTC <$> parseHTTPDate date
       return (size,time)
 
 -- | Return the HTTP headers for a file
