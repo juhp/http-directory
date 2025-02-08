@@ -232,6 +232,7 @@ httpFileSizeTime mgr url = do
   return (msize, mtime)
 
 -- | Try to get the filesize and modification time of an http file
+--
 -- Global Manager version.
 --
 -- Raises an error if the http request fails.
@@ -257,6 +258,7 @@ httpFileHeaders mgr url = do
   return $ responseHeaders response
 
 -- | Return the HTTP headers of an http file.
+--
 -- Global Manager version.
 --
 -- Raises an error if the http request fails.
