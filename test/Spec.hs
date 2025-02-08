@@ -118,18 +118,18 @@ spec = do
 
   -- https://github.com/postmanlabs/httpbin/issues/617
   describe "httpRedirect" $ do
-    it "httpbingo" $ do
+    it "httpRedirect" $ do
       mgr <- httpManager
-      mredir <- httpRedirect mgr "http://httpbingo.org/relative-redirect/1"
+      mredir <- httpRedirect mgr "http://httpbin.org/redirect/1"
       isJust mredir `shouldBe` True
 
-    it "httpbingo'" $ do
-      mredir <- httpRedirect' "http://httpbingo.org/relative-redirect/1"
+    it "httpRedirect'" $ do
+      mredir <- httpRedirect' "http://httpbin.org/redirect/1"
       isJust mredir `shouldBe` True
 
-    it "3 redirs" $ do
+    it "2 httpRedirects" $ do
       mgr <- httpManager
-      redirs <- httpRedirects mgr "http://httpbingo.org/relative-redirect/2"
+      redirs <- httpRedirects mgr "http://httpbin.org/redirect/2"
       length redirs `shouldBe` 2
 
   describe "isHttpUrl" $ do
