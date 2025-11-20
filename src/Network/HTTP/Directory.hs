@@ -325,7 +325,9 @@ httpRedirect' url = do
 parseRequestHead :: String -> IO Request
 parseRequestHead url = do
   request <- parseRequest url
-  return $ request {method = methodHead}
+  return $
+    S.addRequestHeader hAccept "*/*" $
+    request {method = methodHead}
 
 httpHead :: Manager -> String -> IO (Response ())
 httpHead mgr url = do
