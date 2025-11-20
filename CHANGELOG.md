@@ -2,6 +2,9 @@
 
 `http-directory` uses [PVP Versioning](https://pvp.haskell.org).
 
+## 0.1.12 (2025-11-20)
+- send HTTP requests with "Accept: text/html"
+
 ## 0.1.11 (2025-02-08)
 - add httpFileSizeAndTime'
 - tests: switch from httpbingo to httpbin.org/redirect

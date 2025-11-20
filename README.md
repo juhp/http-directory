@@ -20,9 +20,8 @@ and a few other helper functions.
 ## Usage examples
 
 ```shellsession
-Network.HTTP.Directory> httpDirectory' "https://hackage.haskell.org/package/base/src/System"
-["CPUTime.hsc","Environment.hs","Exit.hs","IO.hs","Info.hs","Mem.hs","Timeout.hs",
-"CPUTime","Console","Environment","IO","Mem","Posix"]
+Network.HTTP.Directory> httpDirectory' "https://hackage.haskell.org/package/base/src/src/System"
+["CPUTime.hsc","Environment.hs","Exit.hs","IO.hs","Info.hs","Mem.hs","Timeout.hs","CPUTime","Console","Environment","IO","Mem","Posix"]
 ```
 
 See more [examples](https://github.com/juhp/http-directory/blob/main/example/) and the [latest haddock documentation](https://hackage.haskell.org/package/http-directory/docs/Network-HTTP-Directory.html) for more details.
