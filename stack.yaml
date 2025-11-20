@@ -1,4 +1,4 @@
-resolver: lts-23.7
+resolver: lts-24.20
 flags:
   http-directory:
     executable: true
