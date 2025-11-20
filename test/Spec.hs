@@ -113,7 +113,11 @@ spec = do
 
   describe "httpFileSizeTime" $ do
     it "haskell" $ do
-      (msize, mtime) <- httpFileSizeTime' "https://www.haskell.org/"
+      (msize, mtime) <- httpFileSizeTime' "https://haskell.org/"
+      (isJust msize, isJust mtime) `shouldBe` (False,True)
+
+    it "hf" $ do
+      (msize, mtime) <- httpFileSizeTime' "https://haskell.foundation/"
       (isJust msize, isJust mtime) `shouldBe` (True,True)
 
   -- https://github.com/postmanlabs/httpbin/issues/617
