@@ -67,7 +67,7 @@ import Network.HTTP.Client (hrRedirects, httpLbs, httpNoBody, Manager, method,
 import Network.HTTP.Client.TLS (tlsManagerSettings)
 import Network.HTTP.Date (httpDateToUTC, parseHTTPDate)
 import qualified Network.HTTP.Simple as S
-import Network.HTTP.Types (hContentLength, hLocation, hLastModified,
+import Network.HTTP.Types (hAccept, hContentLength, hLocation, hLastModified,
                            methodHead, statusCode, ResponseHeaders)
 import Network.URI (parseURI, URI(..))
 
@@ -128,7 +128,7 @@ httpRawDirectoryInternal :: (Request -> IO (Response BL.ByteString)) -> String
                          -> IO [Text]
 httpRawDirectoryInternal httpreq url = do
   request <- parseRequest url
-  response <- httpreq request
+  response <- httpreq $ S.addRequestHeader hAccept "text/html" request
   checkResponse url response
   let body = responseBody response
       doc = parseLBS body
