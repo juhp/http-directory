@@ -131,10 +131,10 @@ spec = do
       mredir <- httpRedirect' "http://httpbin.org/redirect/1"
       isJust mredir `shouldBe` True
 
-    it "2 httpRedirects" $ do
+    it "httpRedirects GH" $ do
       mgr <- httpManager
-      redirs <- httpRedirects mgr "http://httpbin.org/redirect/2"
-      length redirs `shouldBe` 2
+      redirs <- httpRedirects mgr "https://github.com/juhp/koji-install"
+      length redirs `shouldBe` 1
 
   describe "isHttpUrl" $ do
     it "http" $
